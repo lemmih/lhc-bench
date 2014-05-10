@@ -1,0 +1,10722 @@
+<html
+><style
+  >body {
+    margin-top:    2em;
+
+    background:#FFF
+    background-color:#FFF;
+    color:#000;
+
+    font-family: Verdana, Sans-Serif;
+    font-size: 11px;
+}
+
+a            { text-decoration: none;      color: #2d95cf }
+a:hover      { text-decoration: underline; color: #2d95cf }
+
+h2 { font-size: larger; text-decoration: none; }
+
+div#Scores td { margin: 0px; padding: 0px; text-align: right;  width: 8%; }
+div#Scores tr { margin: 0px; padding: 0px; }
+
+div.Result { border-bottom: 1px solid white; border-left: 1px solid white; }
+
+div.Category { width: 100%;
+               text-align: left; }
+
+div.Implementation { width: 100%;
+                     text-align: center; }
+
+div.Version { width: 100%;
+              text-align: center; }
+
+div.CompileError { background-color: #b7b6d8; }
+div.CompileError a       { text-decoration: none; color: #000 }
+div.CompileError a:hover { text-decoration: none; color: #000; background-color: #8989d3 }
+
+div.RuntimeError { background-color: #d3b6b6; }
+div.RuntimeError a       { text-decoration: none; color: #000 }
+div.RuntimeError a:hover { text-decoration: none; color: #000; background-color: #d88a8a  }
+
+div.DiffError    { background-color: #e28888; }
+div.DiffError a       { text-decoration: none; color: #000 }
+div.DiffError a:hover { text-decoration: none; color: #000; background-color: #d85858  }
+
+div.Timeout      { background-color: #d3b6d3; }
+div.NotAvailable { background-color: lightgray; }
+
+div.Best         { background-color: #a6eaa7; }
+
+div.Average      { font-weight: bold; }
+
+div#Scores table  {
+    padding: 0px;
+    border: 0px solid black;
+    border-collapse: collapse;
+}
+
+
+table.shownTable {
+    display: inline;
+}
+table.hiddenTable {
+    display: none;
+}
+div.eMsg {
+    display: none;
+    position:absolute;
+    left:20%;
+    background: white;
+    border: 1px solid black;
+    padding: 1em;
+}
+</style
+  ><script src="https://code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"
+  ></script
+  ><script type="text/javascript"
+  >$(document).ready(function() {
+  var tables = document.getElementById("Scores").children;
+  var selectmenu = document.getElementById("selector");
+  selectmenu.onchange = function() {
+    var chosenOption=this.options[this.selectedIndex].value;
+    for(i=0;i<tables.length;i++) {
+      if(chosenOption == tables.item(i).id) {
+        tables.item(i).setAttribute("class", "shownTable");
+      } else {
+        tables.item(i).setAttribute("class", "hiddenTable");
+      }
+    }
+  }
+  selectmenu.onchange();
+  selectmenu.selectedIndex = 0;
+  $(".benchmark").click(function () {
+      // Show the benchmark sources.
+    });
+  $(".eCell").click(function () {
+      $(".eMsg").hide();
+      var errorBox = document.getElementById('div-'+this.id);
+      errorBox.style.display = "inline";
+      errorBox.style.top = parseInt($(this).position().top)+'px';
+      errorBox.style.left = parseInt($(this).position().left)+'px';
+    });
+  $(".eMsg").click(function () {
+      this.style.display = "none";
+    });
+});
+</script
+  ><body
+  ><select id="selector"
+    ><option value="walltime"
+      >Wall time</option
+      ><option value="memoryusage"
+      >Memory usage</option
+      ><option value="maximumheapresidency"
+      >Maximum heap residency</option
+      ><option value="heapallocations"
+      >Heap allocations</option
+      ><option value="cycles"
+      >Cycles</option
+      ><option value="stalledcycles"
+      >Stalled cycles</option
+      ><option value="instructions"
+      >Instructions</option
+      ><option value="contextswitches"
+      >Context switches</option
+      ><option value="minorpagefaults"
+      >Minor page faults</option
+      ><option value="branches"
+      >Branches</option
+      ><option value="branchmisses"
+      >Branch misses</option
+      ><option value="cpumigrations"
+      >Cpu migrations</option
+      ></select
+    ><div id="Scores"
+    ><table id="walltime"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.1s(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.1s(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.7s(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14.3s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.7s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14.8s(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.5s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.1s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >16.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.8s(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.7s(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >32.4s(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >0.8s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >0.9s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.0s(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.0s(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ><td
+	  >1.5 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.6s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.3s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.3s(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.6s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.4s(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.6s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.7s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.7s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.8s(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.4s(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0s(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.6s(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.3 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.7s(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22.0s(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25.8s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >41.7s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >44.2s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >61.9s(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >20.7s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >33.2s(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >33.4s(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >50.8s(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.8s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.4s(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.4s(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.8s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.3s(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.7s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.1s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.9s(1.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.9s(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0s(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.2s(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.3s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.0s(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >14.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >14.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >14.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.3s(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.2s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.8s(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.8s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.3s(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.2s(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.8s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8s(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.5 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25.8s(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >26.9s(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.9s(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.1s(2.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.1s(2.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.1s(2.6)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6s(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.8s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.5s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.9s(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.8s(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >21.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >21.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >31.0s(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.9s(2.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.9s(2.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.9s(2.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.4s(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.5 (5/5)</td
+	  ><td
+	  >1.5 (5/5)</td
+	  ><td
+	  >1.5 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.4s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.5s(2.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.9s(2.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.0s(3.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.0s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0s(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9s(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0s(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.1s(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.8s(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.5 (3/3)</td
+	  ><td
+	  >1.5 (3/3)</td
+	  ><td
+	  >2.2 (3/3)</td
+	  ></tr
+	></table
+      ><table id="memoryusage"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >313.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >532.0 MiB(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >520.0 MiB(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >521.0 MiB(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >662.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >658.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >659.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >660.0 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >158.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >160.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >160.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >211.0 MiB(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >351.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >352.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >390.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >383.0 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >543.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >478.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >484.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >480.0 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25.0 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >20.0 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 MiB(3.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 MiB(1.8)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.0 MiB(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >251.0 MiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >210.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >240.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >248.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17.0 MiB(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >70.0 MiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >52.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >74.0 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >65.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.5 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.3 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >20.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >20.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22.0 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.0 MiB(1.6)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >10.0 MiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.0 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.0 MiB(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 MiB(3.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.0 MiB(2.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.0 MiB(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >122.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >132.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >132.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >137.0 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >980.0 MiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >732.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >729.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.4 GiB(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >2.3 (13/13)</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >2.1 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >377.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >364.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >385.0 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >821.0 MiB(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.0 MiB(2.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.0 MiB(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.0 MiB(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >2.8 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >2.4 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 MiB(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 MiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.8 (3/3)</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.8 (3/3)</td
+	  ></tr
+	></table
+      ><table id="maximumheapresidency"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >149.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >215.9 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >211.3 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >209.7 MiB(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >215.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >215.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >215.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >215.7 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >53.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >54.1 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >54.1 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >77.7 MiB(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >112.1 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >117.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >158.8 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >149.7 MiB(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >264.7 MiB(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >176.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >176.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >176.4 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.3 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >67.8 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >67.8 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >116.0 KiB(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >144.8 KiB(2.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.3 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >119.4 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >105.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >115.5 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >118.7 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0 MiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0 MiB(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0 MiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0 MiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >30.6 MiB(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >20.7 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >32.5 MiB(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.0 MiB(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.2 (7/7)</td
+	  ><td
+	  >1.3 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.4 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.5 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.0 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >73.7 KiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >64.6 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >75.0 KiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >109.5 KiB(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 KiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.4 KiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >73.8 KiB(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >86.1 KiB(2.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.4 KiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >793.1 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >824.5 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >855.8 KiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >870.8 KiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >60.4 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >60.5 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >72.8 KiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >105.6 KiB(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 KiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >103.9 KiB(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 KiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >103.9 KiB(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >50.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >55.1 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >55.1 MiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >56.7 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >479.7 MiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >357.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >356.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >670.8 MiB(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 KiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.4 KiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.2 (13/13)</td
+	  ><td
+	  >1.6 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >127.2 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >121.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >126.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >307.4 MiB(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 KiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.4 KiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >105.9 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >105.9 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >118.2 KiB(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >151.0 KiB(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.1 MiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >958.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >970.6 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1003.7 KiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 KiB(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.4 KiB(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.7 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >113.9 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 MiB(11.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 MiB(11.8)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 MiB(12.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >67.1 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >67.1 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >79.2 KiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >112.3 KiB(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.3 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >61.5 KiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >100.1 KiB(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >2.3 (3/3)</td
+	  ><td
+	  >2.7 (3/3)</td
+	  ><td
+	  >3.6 (3/3)</td
+	  ></tr
+	></table
+      ><table id="heapallocations"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.0 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.3 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.9 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >393.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >393.4 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >393.5 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >393.5 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.6 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.6 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.6 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.6 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >148.8 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >148.8 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >148.8 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >148.8 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >505.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >505.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >505.7 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >505.7 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >53.5 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >53.5 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >53.5 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >53.5 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.0 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.7 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.7 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.7 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.7 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 MiB(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.4 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.4 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.4 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.4 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >142.8 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >142.8 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >196.6 KiB(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >237.9 KiB(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >102.0 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >102.0 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >155.6 KiB(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >197.2 KiB(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >254.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >254.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >254.0 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >254.1 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.3 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.3 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >830.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >830.6 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >830.7 MiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >830.7 MiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.9 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.9 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.9 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.9 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >116.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >116.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >116.0 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >116.0 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >229.6 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >229.6 KiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >282.6 KiB(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >350.7 KiB(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.7 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.7 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.7 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.7 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 GiB(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ></tr
+	></table
+      ><table id="cycles"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.4 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.3 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55.6 G(4.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >43.6 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >38.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >38.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >125.8 G(3.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.3 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22.5 G(3.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >51.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >66.9 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >74.3 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >322.0 G(6.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >64.1 G(4.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.7 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.9 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.4 G(3.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ><td
+	  >4.1 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.6 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >20.4 G(2.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.0 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27.9 G(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >56.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >56.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >56.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >56.4 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.2 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.2 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >34.2 G(4.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.6 G(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19.6 G(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >41.3 G(3.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >2.0 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >55.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >64.9 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >65.7 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >168.2 G(3.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >127.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >132.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >134.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >429.3 G(3.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >63.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >101.2 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >101.9 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >484.1 G(7.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.9 G(4.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >38.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >37.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >35.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >69.5 G(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >24.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >25.6 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >24.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >140.7 G(5.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.7 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.1 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >29.5 G(4.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >34.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >34.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >34.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >39.5 G(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >43.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >236.7 G(5.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >21.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >21.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >22.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >139.9 G(6.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >31.2 G(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14.8 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.4 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >45.9 G(4.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.4 G(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >3.2 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >61.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >79.2 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >82.4 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >215.7 G(3.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17.8 G(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >20.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27.7 G(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >74.4 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >63.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >65.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >154.2 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >17.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >26.4 G(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.9 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.9 G(2.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17.8 G(2.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >84.4 G(11.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17.9 G(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.2 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.3 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >37.0 G(4.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.5 (3/3)</td
+	  ><td
+	  >1.5 (3/3)</td
+	  ><td
+	  >4.6 (3/3)</td
+	  ></tr
+	></table
+      ><table id="stalledcycles"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >33.8 G(6.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19.1 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >75.3 G(6.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.9 G(4.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25.1 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >192.3 G(10.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.5 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >39.6 G(6.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.3 G(4.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >6.0 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.3 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.3 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.7 G(4.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >25.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >25.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >26.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >25.5 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >20.1 G(6.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.3 G(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >10.6 G(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.1 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.7 G(5.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >2.7 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >24.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >29.0 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >29.5 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >109.9 G(4.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >38.8 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >30.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >30.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >235.1 G(7.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >26.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >31.0 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >30.6 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >293.2 G(11.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.3 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.2 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.4 G(5.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14.5 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >37.8 G(3.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.6 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >100.0 G(21.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.9 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.5 G(6.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.9 G(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >159.5 G(19.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.6 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >93.0 G(42.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7.0 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.1 G(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.9 G(1.9)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >32.5 G(6.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.4 G(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >6.1 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >24.1 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >26.2 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >143.0 G(6.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >10.5 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.4 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.4 G(1.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >40.1 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >26.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >94.7 G(3.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.8 G(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >2.9 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.2 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.5 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >50.8 G(13.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.7 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.9 G(4.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.8 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 G(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.0 G(6.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (3/3)</td
+	  ><td
+	  >1.2 (3/3)</td
+	  ><td
+	  >1.2 (3/3)</td
+	  ><td
+	  >7.1 (3/3)</td
+	  ></tr
+	></table
+      ><table id="instructions"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >13.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.0 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.6 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >52.1 G(3.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >57.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >59.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >61.4 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >127.2 G(2.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.7 G(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >105.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >151.4 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >158.4 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >349.7 G(3.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >26.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >30.8 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >32.0 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >67.7 G(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.5 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.6 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.4 G(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.3 (6/6)</td
+	  ><td
+	  >1.3 (6/6)</td
+	  ><td
+	  >2.8 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >17.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >26.4 G(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >26.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >28.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >28.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >39.7 G(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >59.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >59.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >60.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >60.1 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >16.0 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >38.8 G(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.8 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >23.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27.2 G(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >17.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19.3 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >41.1 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.5 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >74.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.4 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >89.8 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >137.8 G(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >252.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >287.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >291.9 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >517.8 G(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >101.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >190.6 G(1.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >197.8 G(2.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >492.5 G(4.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.2 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.8 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.6 G(2.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >53.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >54.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >55.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >71.8 G(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >52.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >52.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >52.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >96.4 G(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.7 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17.4 G(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >33.9 G(3.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >81.9 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >82.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >82.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >84.6 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >58.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >58.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >58.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >144.0 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >49.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >49.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >49.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >98.8 G(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >35.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >35.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >35.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >38.4 G(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >14.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >14.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >36.9 G(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.5 G(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.2 (13/13)</td
+	  ><td
+	  >2.0 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >118.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >179.7 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >191.8 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >224.5 G(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >20.0 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >36.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >36.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >36.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >40.3 G(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >91.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >95.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >99.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >143.8 G(1.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.7 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.3 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >34.5 G(3.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >36.2 G(3.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >88.0 G(8.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >16.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >16.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >17.0 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.6 G(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >14.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.1 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21.5 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >40.0 G(2.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.7 (3/3)</td
+	  ><td
+	  >1.8 (3/3)</td
+	  ><td
+	  >3.2 (3/3)</td
+	  ></tr
+	></table
+      ><table id="contextswitches"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >332(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >432(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >448(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >221.5 K(667.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.1 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.1 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >419.6 K(394.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >212(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >190(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >204(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >69.4 K(365.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.9 K(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.1 K(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >533.8 K(374.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >446(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >421(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >457(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >205.7 K(488.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >69(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >77(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >106(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.3 K(76.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ><td
+	  >332.0 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >329(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >323(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >529(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >82.1 K(254.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >343(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >346(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >375(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >123.4 K(359.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.3 K(2.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >270(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >275(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >441(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >195.4 K(723.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >197(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >189(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >206(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 K(21.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >338(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >325(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >343(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >91.0 K(280.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >368(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >361(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >373(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >117.5 K(325.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.2 (7/7)</td
+	  ><td
+	  >119.7 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.5 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.8 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.9 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >251.8 K(163.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.7 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.8 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 M(368.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.8 K(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.8 K(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.0 M(587.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >162(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >164(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >216(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >216.0 K(1333.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.1 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >415.4 K(412.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >683(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >706(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >699(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >38.0 K(55.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >200(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >240(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >273(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >90.9 K(454.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >960(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >952(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >974(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >34.0 K(35.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.2 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >62.8 K(52.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >609(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >596(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >648(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >51.3 K(86.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >771(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >744(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >810(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >56.8 K(76.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >445(1.6)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >284(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >317(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.1 K(84.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >392(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >373(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >410(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >18.5 K(49.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >1.1 (13/13)</td
+	  ><td
+	  >153.2 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.7 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.2 K(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.3 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >137.2 K(81.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >344(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >350(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >780(2.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.6 K(4.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >573(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >551(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >588(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >97.9 K(177.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.1 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >774.2 K(432.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >499(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >495(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >509(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.8 K(3.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.3 (5/5)</td
+	  ><td
+	  >40.2 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >205(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >463(2.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >523(2.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >169.5 K(827.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >261(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >247(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >270(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >103.7 K(419.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >256(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >337(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >361(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >251.0 K(980.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.4 (3/3)</td
+	  ><td
+	  >1.6 (3/3)</td
+	  ><td
+	  >698.2 (3/3)</td
+	  ></tr
+	></table
+      ><table id="minorpagefaults"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >80.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >136.7 K(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >133.6 K(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >133.6 K(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >169.9 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >169.0 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >169.2 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >169.1 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >40.9 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >41.4 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >41.5 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >54.2 K(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >90.3 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >90.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >100.3 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >98.2 K(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >236.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >242.4 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >242.5 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >228.3 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.2 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.7 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.7 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.4 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ><td
+	  >1.2 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.8 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.9 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.1 K(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.3 K(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.5 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.8 K(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.2 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.7 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >27.8 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >156.9 K(1.6)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >95.3 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >95.1 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >107.1 K(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 K(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.3 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.6 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.7 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 K(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >52.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >71.1 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >69.8 K(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >68.5 K(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.2 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.2 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.6 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.7 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.8 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.5 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.7 K(1.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.8 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.3 K(1.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.3 K(2.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >898(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >912(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.0 K(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 K(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >653(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >693(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >798(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >846(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >666(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >704(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >797(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.6 K(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.7 K(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.4 K(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >976(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >986(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >544(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >528(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >568(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >659(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >513(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >496(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >540(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >635(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >31.7 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >34.3 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >34.3 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >35.3 K(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >251.4 K(1.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >187.9 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >187.1 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >354.5 K(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 K(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >637(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >676(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >782(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.4 (13/13)</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.3 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >145.7 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >135.4 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >156.4 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >311.4 K(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 K(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >632(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >672(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.1 K(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 K(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >685(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >720(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >837(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.4 K(1.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >37.2 K(16.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >23.6 K(10.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >582(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >565(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >603(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >679(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.5 (5/5)</td
+	  ><td
+	  >1.7 (5/5)</td
+	  ><td
+	  >1.7 (5/5)</td
+	  ><td
+	  >1.4 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.3 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.3 K(2.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.3 K(1.7)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.0 K(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.3 K(1.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >838(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >879(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >978(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.4 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >987(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 K(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.3 (3/3)</td
+	  ><td
+	  >1.3 (3/3)</td
+	  ><td
+	  >1.2 (3/3)</td
+	  ><td
+	  >1.1 (3/3)</td
+	  ></tr
+	></table
+      ><table id="branches"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9.9 G(3.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24.0 G(2.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.0 G(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27.6 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27.8 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >64.9 G(3.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.7 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.4 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.5 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.4 G(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >600.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >844.5 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >861.6 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.6 G(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.3 (6/6)</td
+	  ><td
+	  >1.3 (6/6)</td
+	  ><td
+	  >2.8 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.2 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.4 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.7 G(1.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 G(1.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.8 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.8 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.8 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >37.0 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >38.5 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >40.0 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >107.7 M(2.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.1 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.1 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.8 G(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.0 G(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.8 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.9 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.1 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.7 G(3.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >49.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >56.7 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >56.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >101.0 G(2.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >21.0 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >38.6 G(1.8)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >39.4 G(1.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >97.1 G(4.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.1 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.3 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.3 G(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >10.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.7 G(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.6 G(2.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.8 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.1 G(2.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >15.6 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >18.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >35.0 G(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22.0 G(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9.0 G(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.8 G(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.7 G(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.6 G(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.2 (13/13)</td
+	  ><td
+	  >1.2 (13/13)</td
+	  ><td
+	  >2.0 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >21.6 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >32.7 G(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >33.9 G(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >40.2 G(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.2 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.9 G(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.4 G(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.0 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14.4 G(3.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.5 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.5 G(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.1 (5/5)</td
+	  ><td
+	  >1.2 (5/5)</td
+	  ><td
+	  >1.5 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.8 G(3.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.0 G(3.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17.0 G(8.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.2 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.3 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.4 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.2 G(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3.1 G(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.3 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.3 G(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.8 G(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.7 (3/3)</td
+	  ><td
+	  >1.7 (3/3)</td
+	  ><td
+	  >3.0 (3/3)</td
+	  ></tr
+	></table
+      ><table id="branchmisses"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >120.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >194.4 M(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >188.8 M(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >208.7 M(1.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >378.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >415.1 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >422.0 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >446.2 M(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >35.0 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >38.0 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >37.5 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >44.2 M(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >176.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >264.4 M(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >273.5 M(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >342.3 M(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.6 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.5 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16.9 M(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >30.4 M(2.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.5 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11.8 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.0 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15.9 M(1.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (6/6)</td
+	  ><td
+	  >1.3 (6/6)</td
+	  ><td
+	  >1.3 (6/6)</td
+	  ><td
+	  >1.7 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.5 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.6 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5.4 M(4.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >70.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >75.3 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >72.6 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >79.3 M(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >756.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >756.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >758.6 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >757.7 M(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >605.7 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >634.9 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >673.5 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >10.1 M(16.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >198.4 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >219.1 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >271.4 K(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 M(5.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.7 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7.9 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12.4 M(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >105.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >124.0 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >118.7 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >135.7 M(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >1.1 (7/7)</td
+	  ><td
+	  >2.7 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >62.7 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >87.2 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >91.4 M(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >159.0 M(2.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >598.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >784.4 M(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >837.4 M(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >987.8 M(1.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >260.5 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >585.2 M(2.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >528.6 M(2.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >817.8 M(3.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.3 M(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3.6 M(1.8)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8.0 M(4.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >608.4 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >615.6 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >525.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >544.8 M(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >498.7 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >496.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >500.6 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >525.4 M(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.7 M(2.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4.8 M(2.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11.4 M(4.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >357.1 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >357.6 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >359.6 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >365.3 M(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >867.0 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >867.7 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >866.1 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >897.8 M(1.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >200.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >201.0 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >236.2 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >262.5 M(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >11.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13.6 M(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.5 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19.9 M(2.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >65.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >65.0 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >65.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >68.8 M(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (13/13)</td
+	  ><td
+	  >1.2 (13/13)</td
+	  ><td
+	  >1.3 (13/13)</td
+	  ><td
+	  >1.7 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >391.5 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >423.9 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >421.0 M(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >439.1 M(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >181.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >181.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >183.3 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >217.1 M(1.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.7 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.7 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6.4 M(2.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12.8 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >43.7 M(3.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >51.2 M(4.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >131.7 M(10.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >162.8 K(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >172.0 K(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >188.3 K(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >301.1 K(1.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (5/5)</td
+	  ><td
+	  >1.3 (5/5)</td
+	  ><td
+	  >1.4 (5/5)</td
+	  ><td
+	  >2.3 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >28.5 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >90.4 M(3.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >98.3 M(3.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >123.6 M(4.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >107.1 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >111.9 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >112.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >119.6 M(1.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >144.2 M(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >175.9 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >175.7 M(1.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >191.2 M(1.3)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.0 (3/3)</td
+	  ><td
+	  >1.6 (3/3)</td
+	  ><td
+	  >1.6 (3/3)</td
+	  ><td
+	  >1.9 (3/3)</td
+	  ></tr
+	></table
+      ><table id="cpumigrations"
+      ><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >gc</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >circsim</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25(2.8)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >290(32.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >constraints</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >9(2.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25(6.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >404(101.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fibheaps</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >8(2.7)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >15(5.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >63(21.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >gc_bench</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13(1.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >49(7.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >538(76.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >lcss</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6(3.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >23(11.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >138(69.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >power</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >3(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >32(16.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.9 (6/6)</td
+	  ><td
+	  >1.1 (6/6)</td
+	  ><td
+	  >4.7 (6/6)</td
+	  ><td
+	  >42.4 (6/6)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >hackage</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Adler</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >4(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >1(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >10(10.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >211(211.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Agum</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11(1.8)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >28(4.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >96(16.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >Bzlib</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >19(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >30(1.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >37(1.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55(2.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >CRC32</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7(3.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12(6.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >165(82.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >MD5</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5(2.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22(11.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >48(24.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >SHA1</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >30(4.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >279(39.9)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >haskell-src-exts</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13(1.9)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >20(2.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >162(23.1)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >2.0 (7/7)</td
+	  ><td
+	  >1.2 (7/7)</td
+	  ><td
+	  >5.0 (7/7)</td
+	  ><td
+	  >29.1 (7/7)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >imaginary</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >bernouilli</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11(2.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >31(6.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >526(105.2)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >55(1.1)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >50(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >66(1.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >1.2 K(23.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >digits-of-e2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27(3.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >9(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >27(3.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >556(61.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >exp3_8</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >5(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7(1.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13(2.6)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >98(19.6)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >integrate</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21(1.8)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >12(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >36(3.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >672(56.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >kahan</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16(2.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14(2.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >45(6.4)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >primes</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7(2.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19(6.3)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >83(27.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >queens</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12(2.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >37(6.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >148(24.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >rfib</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >16(4.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >29(7.2)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >47(11.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >tak</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >6(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >12(2.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >17(2.8)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >53(8.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >49(16.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >26(8.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >105(35.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >wheel-sieve2</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >10(1.2)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >8(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >19(2.4)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >72(9.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >x2n1</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >20(10.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22(11.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >96(48.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >2.3 (13/13)</td
+	  ><td
+	  >1.2 (13/13)</td
+	  ><td
+	  >4.0 (13/13)</td
+	  ><td
+	  >24.5 (13/13)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >shootout</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >binary-trees</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >5(1.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >35(11.7)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >167(55.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >fannkuch-redux</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >14(7.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >18(9.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >25(12.5)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >n-body</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >16(1.0)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >17(1.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24(1.5)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >157(9.8)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >pidigits</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >7(2.3)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >24(8.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >2.8 K(944.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >spectral-norm</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >7(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >13(1.9)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >22(3.1)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >40(5.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >1.2 (5/5)</td
+	  ><td
+	  >1.9 (5/5)</td
+	  ><td
+	  >5.2 (5/5)</td
+	  ><td
+	  >32.6 (5/5)</td
+	  ></tr
+	><tr
+	><td rowspan="2"
+	  ><div class="Category eCell"
+	    >spectral</div
+	    ></td
+	  ><td colspan="4"
+	  ><div class="Implementation eCell"
+	    >GHC</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  ><div class="Version eCell"
+	    >large-nursery</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >non-threaded</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threaded1</div
+	    ></td
+	  ><td
+	  ><div class="Version eCell"
+	    >threadedN</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >atom</td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >3(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >6(2.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >21(7.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >191(63.7)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >calendar</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11(2.8)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >4(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11(2.8)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >144(36.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >clausify</td
+	  ><td
+	  ><div class=" Result eCell"
+	    >11(5.5)</div
+	    ></td
+	  ><td
+	  ><div class="Best Result eCell"
+	    >2(1.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >20(10.0)</div
+	    ></td
+	  ><td
+	  ><div class=" Result eCell"
+	    >244(122.0)</div
+	    ></td
+	  ></tr
+	><tr
+	><td
+	  >mean:</td
+	  ><td
+	  >2.5 (3/3)</td
+	  ><td
+	  >1.3 (3/3)</td
+	  ><td
+	  >5.8 (3/3)</td
+	  ><td
+	  >65.4 (3/3)</td
+	  ></tr
+	></table
+      ></div
+    ></body
+  ></html
+>
