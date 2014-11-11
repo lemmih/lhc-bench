@@ -1,0 +1,70 @@
+body {
+    margin-top:    2em;
+
+    background:#FFF
+    background-color:#FFF;
+    color:#000;
+
+    font-family: Verdana, Sans-Serif;
+    font-size: 11px;
+}
+
+a            { text-decoration: none;      color: #2d95cf }
+a:hover      { text-decoration: underline; color: #2d95cf }
+
+h2 { font-size: larger; text-decoration: none; }
+
+div#Scores td { margin: 0px; padding: 0px; text-align: right;  width: 8%; }
+div#Scores tr { margin: 0px; padding: 0px; }
+
+div.Result { border-bottom: 1px solid white; border-left: 1px solid white; }
+
+div.Category { width: 100%;
+               text-align: left; }
+
+div.Implementation { width: 100%;
+                     text-align: center; }
+
+div.Version { width: 100%;
+              text-align: center; }
+
+div.CompileError { background-color: #b7b6d8; }
+div.CompileError a       { text-decoration: none; color: #000 }
+div.CompileError a:hover { text-decoration: none; color: #000; background-color: #8989d3 }
+
+div.RuntimeError { background-color: #d3b6b6; }
+div.RuntimeError a       { text-decoration: none; color: #000 }
+div.RuntimeError a:hover { text-decoration: none; color: #000; background-color: #d88a8a  }
+
+div.DiffError    { background-color: #e28888; }
+div.DiffError a       { text-decoration: none; color: #000 }
+div.DiffError a:hover { text-decoration: none; color: #000; background-color: #d85858  }
+
+div.Timeout      { background-color: #d3b6d3; }
+div.NotAvailable { background-color: lightgray; }
+
+div.Best         { background-color: #a6eaa7; }
+
+div.Average      { font-weight: bold; }
+
+div#Scores table  {
+    padding: 0px;
+    border: 0px solid black;
+    border-collapse: collapse;
+}
+
+
+table.shownTable {
+    display: inline;
+}
+table.hiddenTable {
+    display: none;
+}
+div.eMsg {
+    display: none;
+    position:absolute;
+    left:20%;
+    background: white;
+    border: 1px solid black;
+    padding: 1em;
+}
