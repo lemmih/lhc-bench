@@ -1,19 +1,24 @@
 module Html where
 
 import Numeric
-import Text.Html
+import Text.XHtml
 import Data.List
 import Data.Char
+import System.IO.Unsafe
 
+import Paths_lhc_bench
 
 data CellValue
     = TimeCell Double
     | MemoryCell Integer
     | CounterCell Integer
+    | RatioCell Double
 
 instance HTML CellValue where
     toHtml (TimeCell v) = toHtml (ppRatio v ++ "s")
     toHtml (CounterCell i) = toHtml (showCounter i)
+    toHtml (MemoryCell m) = toHtml (showMemory m)
+    toHtml (RatioCell r) = toHtml (showFFloat (Just 1) (r*100) "%")
 
 showCounter :: Integer -> String
 showCounter i = go
@@ -24,6 +29,16 @@ showCounter i = go
        | i < 10^6  = reduce (10^3) "K"
        | i < 10^9  = reduce (10^6) "M"
        | otherwise = reduce (10^9) "G"
+
+showMemory :: Integer -> String
+showMemory i = go
+  where
+    reduce size suffix =
+        showFFloat (Just 1) (fromIntegral i / size) (' ':suffix)
+    go | i < 2^10  = show i
+       | i < 2^20  = reduce (2^10) "KiB"
+       | i < 2^30  = reduce (2^20) "MiB"
+       | otherwise = reduce (2^30) "GiB"
 
 data Cell
     = SuccessCell CellValue Double
@@ -111,6 +126,14 @@ prog2     z      y        z       f
 
 -}
 
+cssStyle :: String
+cssStyle = unsafePerformIO $ do
+    readFile =<< getDataFileName "results.css"
+
+javascript :: String
+javascript = unsafePerformIO $ do
+    readFile =<< getDataFileName "results.js"
+
 mkAnalysis tables =
     thehtml $
         benchHeader +++
@@ -123,10 +146,8 @@ mkAnalysis tables =
             )
 
 benchHeader =
-    thelink noHtml ! [ href "results.css"
-                     , rel "stylesheet"
-                     , thetype "text/css" ] +++
+    style (toHtml cssStyle) +++
     tag "script" noHtml ! [ src jquery, thetype "text/javascript" ] +++
-    tag "script" noHtml ! [ src "results.js", thetype "text/javascript" ]
+    tag "script" (primHtml javascript) ! [thetype "text/javascript" ]
   where
-    jquery = "jquery-1.4.2.min.js"
+    jquery = "https://code.jquery.com/jquery-1.11.1.min.js"

@@ -1,15 +1,19 @@
 {-# LANGUAGE RecordWildCards #-}
 module Main where
 
-import Data.Ord
-import Data.ByteString (ByteString)
-import qualified Data.ByteString.Char8 as B
-import Data.List
-import           Control.Exception
+import System.Posix.Resource
+
+import Data.Maybe
 import           Control.Concurrent
+import           Control.Exception
 import           Control.Monad
+import           Data.ByteString            (ByteString)
+import qualified Data.ByteString.Char8      as B
 import qualified Data.ByteString.Lazy.Char8 as Lazy
+import           Data.Char
 import           Data.Digest.Pure.SHA
+import           Data.List
+import           Data.Ord
 import           Data.Time
 import           System.Directory
 import           System.Environment
@@ -18,6 +22,7 @@ import           System.FilePath
 import           System.IO                  (IOMode (..), hClose, hFileSize,
                                              openFile)
 import           System.Process
+import           System.Posix.Process
 
 import           Html
 
@@ -50,6 +55,12 @@ runResultsStats _ = []
 
 data RuntimeStats = RuntimeStats
     { runtimeWalltime        :: WallTime
+    , runtimeHeapAllocations :: Integer -- in bytes
+    , runtimeHeapResidency   :: Integer -- in bytes
+    , runtimeMemoryUsage     :: Integer -- in bytes
+    , runtimeMutatorTime     :: Double
+    , runtimeGCTime          :: Double
+    , runtimeAllocationRate  :: Integer -- bytes/second per MUT second
     , runtimeContextSwitches :: Integer
     , runtimeCpuMigrations   :: Integer
     , runtimePageFaults      :: Integer
@@ -59,6 +70,25 @@ data RuntimeStats = RuntimeStats
     , runtimeBranches        :: Integer
     , runtimeBranchMisses    :: Integer
     } deriving ( Show, Read )
+
+emptyRuntimeStats :: RuntimeStats
+emptyRuntimeStats = RuntimeStats
+    { runtimeWalltime        = 0
+    , runtimeHeapAllocations = 0
+    , runtimeHeapResidency   = 0
+    , runtimeMemoryUsage     = 0
+    , runtimeMutatorTime     = 0
+    , runtimeGCTime          = 0
+    , runtimeAllocationRate  = 0
+    , runtimeContextSwitches = 0
+    , runtimeCpuMigrations   = 0
+    , runtimePageFaults      = 0
+    , runtimeCycles          = 0
+    , runtimeStalledCycles   = 0
+    , runtimeInstructions    = 0
+    , runtimeBranches        = 0
+    , runtimeBranchMisses    = 0
+    }
 
 data Flavor = GHC | JHC | AJHC | UHC | LHC
     deriving ( Show, Eq )
@@ -115,16 +145,22 @@ data Configuration = Configuration
     } deriving ( Show )
 
 data Benchmark = Benchmark
-    { benchmarkRoot     :: FilePath
-    , benchmarkCategory :: String
-    , benchmarkName     :: String
+    { benchmarkRoot      :: FilePath
+    , benchmarkCategory  :: String
+    , benchmarkName      :: String
     , benchmarkExtension:: String
-    , benchmarkStdout   :: Bool
-    , benchmarkStdin    :: Bool
-    , benchmarkDisabled :: Bool
-    , benchmarkArgs     :: [String]
-    , benchmarkHash     :: Integer
+    , benchmarkStdout    :: Bool
+    , benchmarkStdin     :: Bool
+    , benchmarkDisabled  :: Bool
+    , benchmarkArgs      :: [String]
+    , benchmarkHash      :: Integer
     } deriving ( Show, Eq )
+
+--readM :: Read a => String -> Maybe a
+--readM input =
+--    case reads input of
+--        [(val,"")] -> Just val
+--        _          -> Nothing
 
 readBuildResults :: Instance -> IO BuildResults
 readBuildResults inst = handle err $ do
@@ -225,7 +261,7 @@ instanceName inst =
     benchmark = instanceBenchmark inst
     flavor = configurationFlavor config
 
-    
+
 
 
 buildInstanceIdentifier :: Instance -> String
@@ -305,12 +341,9 @@ hasBuiltInstance inst = do
         BuildMissing -> return False
         _            -> return True
 
--- in seconds
-buildTimeout :: Int
-buildTimeout = 60 * 5
-
 buildInstance :: Instance -> IO ()
-buildInstance inst = unless (benchmarkDisabled $ instanceBenchmark inst) $ do
+buildInstance inst = withLimits $
+    unless (benchmarkDisabled $ instanceBenchmark inst) $ do
     dst <- instanceProgramFile inst
     createDirectoryIfMissing True (takeDirectory dst)
     let args = concat
@@ -318,25 +351,21 @@ buildInstance inst = unless (benchmarkDisabled $ instanceBenchmark inst) $ do
                 , configurationBuildOptions config ]
     --putStrLn $ "Running: " ++ showCommandForUser cmd args
     putStrLn $ "[" ++ ident ++ "] Building"
-    let whenTimeout = do
-            putStrLn $ "[" ++ ident ++ "] Timeout"
-            writeBuildResults inst BuildTimeout
-    timeout buildTimeout whenTimeout $ do
-        (wallTime, (code, _stdout, stderr)) <- timeIO $
-            readProcessWithExitCode cmd args ""
-        case code of
-            ExitSuccess -> do
-                callProcess "strip" ["-s", dst]
-                benchmarkSize <- getFileSize dst
-                oldResults <- readBuildResults inst
-                let compileTimes = wallTime : buildResultsWallTime oldResults
-                writeBuildResults inst $
-                    BuildSuccess benchmarkSize compileTimes
-                --putStrLn $ "[" ++ ident ++ "] Success"
-            ExitFailure{} -> do
-                writeRunResults inst (CompileError stderr)
-                putStrLn $ "[" ++ ident ++ "] Failure:"
-                putStrLn stderr
+    (wallTime, (code, _stdout, stderr)) <- timeIO $
+        readProcessWithExitCode cmd args ""
+    case code of
+        ExitSuccess -> do
+            callProcess "strip" [dst]
+            benchmarkSize <- getFileSize dst
+            oldResults <- readBuildResults inst
+            let compileTimes = wallTime : buildResultsWallTime oldResults
+            writeBuildResults inst $
+                BuildSuccess benchmarkSize compileTimes
+            --putStrLn $ "[" ++ ident ++ "] Success"
+        ExitFailure{} -> do
+            writeRunResults inst (CompileError stderr)
+            putStrLn $ "[" ++ ident ++ "] Failure:"
+            putStrLn stderr
   where
     config = instanceConfiguration inst
     benchmark = instanceBenchmark inst
@@ -355,9 +384,6 @@ readBenchmarkStdout:: Benchmark -> IO ByteString
 readBenchmarkStdout benchmark | not (benchmarkStdout benchmark) = return B.empty
 readBenchmarkStdout benchmark = do
     B.readFile (replaceExtension (benchmarkSource benchmark) "stdout")
-
-runTimeout :: Int
-runTimeout = 60*5
 
 readProcessWithExitCode' :: FilePath -> [String] -> ByteString
                         -> IO (ExitCode, ByteString, ByteString)
@@ -388,6 +414,18 @@ collectStats output s0 = foldl worker s0 (map (words . B.unpack) (B.lines output
   where
     worker stats line =
         case line of
+            [n,"bytes","allocated","in","the","heap"] ->
+                stats{ runtimeHeapAllocations = readGHC n }
+            (n : "bytes" : "maximum" : "residency" : _) ->
+                stats{ runtimeHeapResidency = readGHC n }
+            (n : "MB" : "total" : "memory" : "in" : "use" : _) ->
+                stats{ runtimeMemoryUsage = readGHC n * 1024 * 1024 }
+            ("MUT" : "time" : n : _) ->
+                stats{ runtimeMutatorTime = read (init n) }
+            ("GC" : "time" : n : _) ->
+                stats{ runtimeGCTime = read (init n) }
+            ["Alloc", "rate", n, "bytes", "per", "MUT", "second"] ->
+                stats{ runtimeAllocationRate = readGHC n }
             [n,"context-switches"] -> stats{ runtimeContextSwitches = read n }
             [n,"cpu-migrations"]   -> stats{ runtimeCpuMigrations = read n }
             [n,"page-faults"]      -> stats{ runtimePageFaults = read n }
@@ -398,52 +436,43 @@ collectStats output s0 = foldl worker s0 (map (words . B.unpack) (B.lines output
             [n,"branches"]         -> stats{ runtimeBranches = read n }
             [n,"branch-misses"]    -> stats{ runtimeBranchMisses = read n }
             _ -> stats
+    readGHC = read . filter isDigit
 
 -- [app dir]/runs/id/results
 runInstance :: Instance -> IO ()
 runInstance inst | benchmarkDisabled (instanceBenchmark inst) = do
     writeRunResults inst RunDisabled
-runInstance inst = unless (benchmarkDisabled $ instanceBenchmark inst) $ do
+runInstance inst = withLimits $
+    unless (benchmarkDisabled $ instanceBenchmark inst) $ do
     isBuilt <- hasBuiltInstance inst
     when isBuilt $ do
         putStrLn $ "[" ++ ident ++ "] Running"
         prog <- instanceProgramFile inst
         stdin <- readBenchmarkStdin benchmark
-        let whenTimeout = do
-                putStrLn $ "[" ++ ident ++ "] Timeout"
-                writeRunResults inst (RuntimeError "timeout")
-        timeout runTimeout whenTimeout $ do
+        (wallTime, (code, stdout, stderr)) <- timeIO $
+            runAndMeasure prog args stdin
+        case code of
+            ExitSuccess -> do
+                canonicalStdout <- readBenchmarkStdout benchmark
+                if canonicalStdout == stdout
+                    then do
+                        oldResults <- readRunResults inst
+                        let oldStats = runResultsStats oldResults
+                            newStats = collectStats stderr emptyRuntimeStats
+                                { runtimeWalltime = wallTime }
+                        writeRunResults inst $
+                            RunSuccess (newStats : oldStats)
+                        putStrLn $ "[" ++ ident ++ "] Success"
 
-            (wallTime, (code, stdout, stderr)) <- timeIO $
-                runAndMeasure prog args stdin
-            case code of
-                ExitSuccess -> do
-                    canonicalStdout <- readBenchmarkStdout benchmark
-                    if canonicalStdout == stdout
-                        then do
-                            oldResults <- readRunResults inst
-                            let oldStats = runResultsStats oldResults
-                                newStats = collectStats stderr $ RuntimeStats
-                                    { runtimeWalltime = wallTime
-                                    , runtimeContextSwitches = 0
-                                    , runtimeCpuMigrations = 0
-                                    , runtimePageFaults = 0
-                                    , runtimeCycles = 0
-                                    , runtimeStalledCycles = 0
-                                    , runtimeInstructions = 0
-                                    , runtimeBranches = 0
-                                    , runtimeBranchMisses = 0 }
-                            writeRunResults inst $
-                                RunSuccess (newStats : oldStats)
-                            putStrLn $ "[" ++ ident ++ "] Success"
-
-                        else do
-                            writeRunResults inst DiffError
-                            putStrLn $ "[" ++ ident ++ "] Invalid run"
-                ExitFailure{} -> do
-                    writeRunResults inst (RuntimeError $ B.unpack stderr)
-                    putStrLn $ "[" ++ ident ++ "] Failure: "
-                    B.putStrLn stderr
+                    else do
+                        writeRunResults inst DiffError
+                        putStrLn $ "[" ++ ident ++ "] Invalid run"
+                        B.putStrLn stdout
+                        B.putStrLn stderr
+            ExitFailure{} -> do
+                writeRunResults inst (RuntimeError $ B.unpack stderr)
+                putStrLn $ "[" ++ ident ++ "] Failure: "
+                B.putStrLn stderr
   where
     config = instanceConfiguration inst
     benchmark = instanceBenchmark inst
@@ -454,11 +483,11 @@ runInstance inst = unless (benchmarkDisabled $ instanceBenchmark inst) $ do
     ident = instanceName inst
 
 
-analyseWallTime :: [RunResults] -> [Cell]
-analyseWallTime results =
+analyseWallTime :: (RuntimeStats -> WallTime) -> [RunResults] -> [Cell]
+analyseWallTime timer results =
     [ case result of
         RunSuccess timings ->
-            let t = average (map runtimeWalltime timings) in
+            let t = average (map timer timings) in
             SuccessCell (TimeCell t) (t/smallest)
         CompileError msg -> CompileErrorCell msg
         RuntimeError msg -> RuntimeErrorCell msg
@@ -468,7 +497,7 @@ analyseWallTime results =
     | result <- results ]
   where
     wallTimes =
-        [ average (map runtimeWalltime timings)
+        [ average (map timer timings)
         | RunSuccess timings <- results ]
     smallest =
         case wallTimes of
@@ -502,12 +531,66 @@ analyseCounter counter results =
     average [] = 0
     average lst = sum lst `div` fromIntegral (length lst)
 
+-- FIXME: Refactor
+analyseMemory :: (RuntimeStats -> Integer) -> [RunResults] -> [Cell]
+analyseMemory counter results =
+    [ case result of
+        RunSuccess timings ->
+            let t = average (map counter timings) in
+            SuccessCell (MemoryCell t) (ratio t)
+        CompileError msg -> CompileErrorCell msg
+        RuntimeError msg -> RuntimeErrorCell msg
+        DiffError        -> DiffErrorCell
+        RunDisabled      -> RunDisabledCell
+        RunIncomplete    -> RunDisabledCell
+    | result <- results ]
+  where
+    counters =
+        [ average (map counter timings)
+        | RunSuccess timings <- results ]
+    ratio _ | smallest == 0 = 1
+    ratio a = fromIntegral a / fromIntegral smallest
+    smallest =
+        case counters of
+            [] -> 0
+            (x:xs) -> foldr min x xs
+    average [] = 0
+    average lst = sum lst `div` fromIntegral (length lst)
+
+analyseRatio :: (RuntimeStats -> Double)
+             -> (RuntimeStats -> Double) -> [RunResults] -> [Cell]
+analyseRatio num denom results =
+    [ case result of
+        RunSuccess timings ->
+            let t = average (map counter timings) in
+            SuccessCell (RatioCell t) (ratio t)
+        CompileError msg -> CompileErrorCell msg
+        RuntimeError msg -> RuntimeErrorCell msg
+        DiffError        -> DiffErrorCell
+        RunDisabled      -> RunDisabledCell
+        RunIncomplete    -> RunDisabledCell
+    | result <- results ]
+  where
+    counter stats = num stats / (num stats + denom stats)
+    counters =
+        [ average (map counter timings)
+        | RunSuccess timings <- results ]
+    -- ratio _ | highest == 1 = 1
+    ratio a = highest / a
+    highest =
+        case counters of
+            [] -> 1
+            (x:xs) -> foldr max x xs
+    average [] = 0
+    average lst = sum lst / fromIntegral (length lst)
+
+
 runResultsToTable :: ([RunResults] -> [Cell])
                   -> [(Instance, RunResults)] -> Table
 runResultsToTable analyse pairs =
     Table
         [ (show flavor, labels flavor) | flavor <- flavors ]
-        
+
         [ Category category
             [ (prog,
                 (analyse results)
@@ -546,11 +629,19 @@ writeReport :: [Instance] -> IO ()
 writeReport instances = do
     results <- mapM readRunResults instances
     let rs = zip instances results
-    let wallTime = runResultsToTable analyseWallTime rs
+    let wt f = runResultsToTable (analyseWallTime f) rs
         cs f = runResultsToTable (analyseCounter f) rs
-
+        ms f = runResultsToTable (analyseMemory f) rs
+        rt n d = runResultsToTable (analyseRatio n d) rs
     let tables =
-            [ ("Wall time", wallTime)
+            [ ("Wall time", wt runtimeWalltime)
+            , ("Memory usage", ms runtimeMemoryUsage)
+            , ("Maximum heap residency", ms runtimeHeapResidency)
+            , ("Heap allocations", ms runtimeHeapAllocations)
+            , ("Mutator time", wt runtimeMutatorTime)
+            , ("GC time", wt runtimeGCTime)
+            , ("Productivity", rt runtimeMutatorTime runtimeGCTime)
+            , ("Allocation rate", cs runtimeAllocationRate)
             , ("Cycles", cs runtimeCycles)
             , ("Stalled cycles", cs runtimeStalledCycles)
             , ("Instructions", cs runtimeInstructions)
@@ -611,18 +702,18 @@ knownConfigurations =
     ]
 
 
-timeout :: Int -> IO a -> IO a -> IO a
-timeout time whenTimeout action = do
-    tid <- myThreadId
-    killer <- forkIO $ do
-        threadDelay (10^6 * time)
-        killThread tid
-    ret <- handle handleKilled action
-    killThread killer
-    return ret
-  where
-    handleKilled ThreadKilled = whenTimeout
-    handleKilled e = throwIO e
+--timeout :: Int -> IO a -> IO a -> IO a
+--timeout time whenTimeout action = do
+--    tid <- myThreadId
+--    killer <- forkIO $ do
+--        threadDelay (10^6 * time)
+--        killThread tid
+--    ret <- handle handleKilled action
+--    killThread killer
+--    return ret
+--  where
+--    handleKilled ThreadKilled = whenTimeout
+--    handleKilled e = throwIO e
 
 timeIO :: IO a -> IO (Double, a)
 timeIO ioa = do
@@ -631,6 +722,26 @@ timeIO ioa = do
     t2 <- getCurrentTime
     return (realToFrac $ diffUTCTime t2 t1, a)
 
+-- time limit in seconds.
+cpuTimeLimit :: Integer
+cpuTimeLimit = 5
+
+-- memory limit in bytes. Covers all virtual memory, not just resident memory.
+memoryLimit :: Integer
+memoryLimit = 2^30 * 2 -- 2 GiB
+
+withLimits :: IO () -> IO ()
+withLimits action = do
+    action{-
+    pid <- forkProcess $ do
+        --setResourceLimit ResourceCPUTime
+        --    (ResourceLimits (ResourceLimit cpuTimeLimit) (ResourceLimit cpuTimeLimit))
+        --setResourceLimit ResourceTotalMemory
+        --    (ResourceLimits (ResourceLimit memoryLimit) (ResourceLimit memoryLimit))  
+            --(ResourceLimits (ResourceLimit memoryLimit) ResourceLimitInfinity)  
+        action
+    Just status <- getProcessStatus True False pid
+    print status-}
 
 main :: IO ()
 main = do
